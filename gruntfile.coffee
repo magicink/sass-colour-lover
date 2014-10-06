@@ -25,7 +25,6 @@ module.exports = (grunt)->
 
         files :
 
-          './build/sass-colour-lover.js' : './src/coffee/' +
-            'sass-colour-lover.coffee'
+          './sass-colour-lover.js' : './src/coffee/sass-colour-lover.coffee'
 
   grunt.registerTask 'default', ['coffeelint','coffee']
