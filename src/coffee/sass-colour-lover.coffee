@@ -23,10 +23,16 @@ class module.exports.Palette
   @title : ''
   @totalColors : 0
   @url : ''
+  @append : false
+  @palettes : null
+  @errors : 0
 
   ###
   # Getters
   ###
+
+  @getAppend : ->
+    @append
 
   @getCount : ->
     @colorCount
@@ -44,11 +50,21 @@ class module.exports.Palette
   # Setters
   ###
 
+  @resetColors : ->
+    @colors = []
+
+  @resetCount : ->
+    @colorCount = 0
+
+  @setAppend : (@append)->
+
   @setAuthor : (@author)->
 
   @setFile : (@file)->
 
   @setFormat : (@colorFormat)->
+
+  @setPalettes : (@palettes)->
 
   @setTitle : (@title)->
 
@@ -106,6 +122,9 @@ class module.exports.Palette
   @incrementCount : ->
     @colorCount++
 
+  @incrementErrors : ->
+    @errors++
+
   @writeFile : ->
 
     output = "// Palette: #{@title} by #{@author}\r\n"
@@ -113,6 +132,7 @@ class module.exports.Palette
     output += "\r\n"
 
     for color in @colors
+
       output += color.title
 
       bufferSize = @tabSize - color.title.length
@@ -125,11 +145,35 @@ class module.exports.Palette
       output += value
       output += ';\r\n'
 
-    fs.writeFile @file, output, (error)=>
-      if error?
-        console.log error
-      else
-        console.log "Successfully created #{@file}"
+    if module.exports.Palette.getAppend() is false
+
+      fs.writeFile @file, output, (error)->
+
+        if error?
+          console.log error
+
+        module.exports.Palette.setAppend true
+
+        if module.exports.Palette.palettes.length > 0
+
+          nextPalette = module.exports.Palette.palettes.pop()
+
+          module.exports.Palette.requestPalette nextPalette
+
+    else if module.exports.Palette.getAppend() is true
+
+      output = "\r\n" + output
+
+      fs.appendFile @file, output, (error)->
+
+        if error?
+          console.log error
+
+        if module.exports.Palette.palettes.length > 0
+
+          nextPalette = module.exports.Palette.palettes.pop()
+
+          module.exports.Palette.requestPalette nextPalette
 
   ###
   # This method decides how command line arguments are handled
@@ -149,9 +193,21 @@ class module.exports.Palette
           if option[2]?
             module.exports.Palette.setFormat option[2]
 
+  @requestPalette : (id)->
+
+    options =
+      hostname : module.exports.Palette.getHost()
+      path : "/api/palette/#{id}/?format=json"
+
+    request = http.request options, (response)->
+      module.exports.Palette.paletteCallback response
+
+    request.end()
+
   @paletteCallback : (response)->
 
     if response.statusCode is 200
+
       paletteData = ''
 
       response.on 'data', (chunk)->
@@ -167,6 +223,7 @@ class module.exports.Palette
           module.exports.Palette.setTitle palette.title
           module.exports.Palette.setUrl palette.url
           module.exports.Palette.colorsCallback palette.colors
+
         else
           console.log 'ERROR: No matching palette was found'
 
@@ -175,6 +232,8 @@ class module.exports.Palette
     if (Object.prototype.toString.call colors) is '[object Array]'
 
       module.exports.Palette.setTotalColors colors.length
+      module.exports.Palette.resetCount()
+      module.exports.Palette.resetColors()
 
       for color in colors
 
@@ -219,8 +278,9 @@ class module.exports.Palette
 parameters = process.argv.slice 2
 
 id = null
+isMulti = false
 
-idFlag = /^(--id=)(\d+)/
+idFlag = /^(--ids=)(.*)/
 urlFlag = /^(http:\/\/|)(www\.|)colourlovers\.com\/palette\/(\d+)\//
 
 if parameters.length > 0
@@ -247,14 +307,24 @@ if parameters.length > 0
 
 if id?
 
-  options =
-    hostname : module.exports.Palette.getHost()
-    path : "/api/palette/#{id}/?format=json"
+  # if the id contains commas
 
-  request = http.request options, (response)->
-    module.exports.Palette.paletteCallback response
+  multiFlag = /\,/
+  multi = multiFlag.exec id
 
-  request.end()
+  if multi?
+    isMulti = true
+    module.exports.Palette.setPalettes multi.input.split ','
+
+  if isMulti is true
+
+    id = module.exports.Palette.palettes.pop()
+
+    module.exports.Palette.requestPalette id
+
+  else
+
+    module.exports.Palette.requestPalette id
 
 else
 
