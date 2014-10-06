@@ -16,7 +16,7 @@ class module.exports.Palette
   @colorCount : 0
   @colors : []
   @file : '_palette.scss'
-  @format : 'rgb'
+  @colorFormat : 'rgb'
   @hostname : 'www.colourlovers.com'
   @paletteID : null
   @tabSize : 0
@@ -49,7 +49,7 @@ class module.exports.Palette
 
   @setFile : (@file)->
 
-  @setFormat : (@format)->
+  @setFormat : (@colorFormat)->
 
   @setTitle : (@title)->
 
@@ -122,7 +122,7 @@ class module.exports.Palette
 
       output += buffer
 
-      value = if @format is 'hex' then color.hex else color.rgb
+      value = if @colorFormat is 'hex' then color.hex else color.rgb
       output += value
       output += ';\r\n'
 
@@ -208,7 +208,7 @@ class module.exports.Palette
             if count is total
               module.exports.Palette.writeFile()
 
-        .end()
+        request.end()
 
     else
       console.log 'ERROR: Palette does not contain any colors!'
@@ -219,39 +219,80 @@ class module.exports.Palette
 
 parameters = process.argv.slice 2
 
-idFlag = /^(--id=)(.*)/
+id = null
+
+idFlag = /^(--id=)(\d+)/
+urlFlag = /^(http:\/\/|)(www\.|)colourlovers\.com\/palette\/(\d+)\//
 
 if parameters.length > 0
 
-  id = null
+  for parameter in parameters
 
-  for i in [0...parameters.length]
+    matches = idFlag.exec parameter
 
-    result = idFlag.exec parameters[i]
+    if not matches?
 
-    if result?
+      matches = urlFlag.exec parameters
 
-      id = result[2]
+      if matches?
 
-      if id?
+        id = matches[3]
 
-        for j in [0...parameters.length]
-          module.exports.Palette.parameterize parameters[j]
+        break
 
-        options =
-          hostname : module.exports.Palette.getHost()
-          path : "/api/palette/#{id}/?format=json"
+    else
 
-        request = http.request options, (response)->
-          module.exports.Palette.paletteCallback response
-        request.end()
-
-      else
-
-        console.log 'ERROR: No palette ID has been provided'
+      id = matches[2]
 
       break
+
+if id?
+
+  options =
+    hostname : module.exports.Palette.getHost()
+    path : "/api/palette/#{id}/?format=json"
+
+  request = http.request options, (response)->
+    module.exports.Palette.paletteCallback response
+
+  request.end()
 
 else
 
   console.log 'ERROR: No palette ID has been provided'
+
+
+# if parameters.length > 0
+
+#   id = null
+
+#   for i in [0...parameters.length]
+
+#     result = idFlag.exec parameters[i]
+
+#     if result? and result[2]?
+
+#       id = result[2]
+
+#       if id?
+
+#         for j in [0...parameters.length]
+#           module.exports.Palette.parameterize parameters[j]
+
+#         options =
+#           hostname : module.exports.Palette.getHost()
+#           path : "/api/palette/#{id}/?format=json"
+
+#         request = http.request options, (response)->
+#           module.exports.Palette.paletteCallback response
+#         request.end()
+
+#       else
+
+#         console.log 'ERROR: No palette ID has been provided'
+
+#       break
+
+# else
+
+#   console.log 'ERROR: No palette ID has been provided'
