@@ -23,7 +23,6 @@ class module.exports.Palette
   @title : ''
   @totalColors : 0
   @url : ''
-  @queried : false
 
   ###
   # Getters
@@ -260,39 +259,3 @@ if id?
 else
 
   console.log 'ERROR: No palette ID has been provided'
-
-
-# if parameters.length > 0
-
-#   id = null
-
-#   for i in [0...parameters.length]
-
-#     result = idFlag.exec parameters[i]
-
-#     if result? and result[2]?
-
-#       id = result[2]
-
-#       if id?
-
-#         for j in [0...parameters.length]
-#           module.exports.Palette.parameterize parameters[j]
-
-#         options =
-#           hostname : module.exports.Palette.getHost()
-#           path : "/api/palette/#{id}/?format=json"
-
-#         request = http.request options, (response)->
-#           module.exports.Palette.paletteCallback response
-#         request.end()
-
-#       else
-
-#         console.log 'ERROR: No palette ID has been provided'
-
-#       break
-
-# else
-
-#   console.log 'ERROR: No palette ID has been provided'
