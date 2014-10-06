@@ -21,12 +21,12 @@ module.exports = (grunt)->
       build :
 
         options :
-
           bare : true
 
         files :
-
-          './sass-colour-lover.js' : './src/coffee/sass-colour-lover.coffee'
+          './build/sass-colour-lover.js' : [
+            './src/coffee/sass-colour-lover.coffee'
+          ]
 
     uglify :
 
@@ -39,7 +39,6 @@ module.exports = (grunt)->
       build :
 
         files :
-
-          './sass-colour-lover.js' : './sass-colour-lover.js'
+          './build/sass-colour-lover.js' : './build/sass-colour-lover.js'
 
   grunt.registerTask 'default', ['coffeelint','coffee','uglify']

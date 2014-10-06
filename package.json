@@ -34,6 +34,6 @@
   },
   "preferGlobal": "true",
   "bin": {
-    "sass-colour-lover": "sass-colour-lover.js"
+    "sass-colour-lover": "build/sass-colour-lover.js"
   }
 }
