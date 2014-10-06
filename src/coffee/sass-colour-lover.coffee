@@ -6,7 +6,7 @@
 http = require 'http'
 fs = require 'fs'
 
-SCL = {}
+SassColourLover = {}
 SassColourLover.Palette = {}
 
 SassColourLover.parameters = process.argv.slice 2
@@ -19,7 +19,7 @@ class SassColourLover.Palette
   @file : '_palette.scss'
   @format : 'rgb'
   @hostname : 'www.colourlovers.com'
-  @paletteID : null 
+  @paletteID : null
   @tabSize : 0
   @title : ''
   @totalColors : 0
@@ -54,10 +54,8 @@ class SassColourLover.Palette
 
       modifiedTitle = "#{base}-#{count}"
 
-      title = SassColourLover.Palette.individualize
-        modifiedTitle,
-        base,
-        count + 1
+      title = SassColourLover.Palette.individualize modifiedTitle,
+        base, count + 1
     
     return title
 
