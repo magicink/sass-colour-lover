@@ -42,3 +42,4 @@ module.exports = (grunt)->
           './build/sass-colour-lover.js' : './build/sass-colour-lover.js'
 
   grunt.registerTask 'default', ['coffeelint','coffee','uglify']
+  grunt.registerTask 'test', ['coffeelint']
