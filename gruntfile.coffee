@@ -28,12 +28,16 @@ module.exports = (grunt)->
             './src/coffee/sass-colour-lover.coffee'
           ]
 
+    ###
+    # grunt-contrib-uglify is used to get around CoffeeScript's inability
+    # to compile the shebang pragma.
+    ###
+
     uglify :
 
       options :
 
         banner : "#! /usr/bin/env node\r\n"
-        beautify : true
         mangle : false
 
       build :
