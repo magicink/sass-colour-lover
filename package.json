@@ -1,0 +1,23 @@
+{
+  "name": "sass-colour-lover",
+  "version": "1.0.0",
+  "description": "Use the COLOURLovers API to auto-magically populate your Sass stylesheets.",
+  "main": "build/sass-colour-lover.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/magicink/sass-colour-lover.git"
+  },
+  "keywords": [
+    "COLOURLovers",
+    "Sass"
+  ],
+  "author": "@magicink",
+  "license": "GPLv2",
+  "bugs": {
+    "url": "https://github.com/magicink/sass-colour-lover/issues"
+  },
+  "homepage": "https://github.com/magicink/sass-colour-lover"
+}
