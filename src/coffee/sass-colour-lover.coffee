@@ -1,5 +1,3 @@
-'#! /usr/bin/env node'
-
 ###
 # Uses the COLOURLovers Palette and Color API to dynamcally generate a
 # Sass variable stylesheet.
@@ -10,51 +8,6 @@
 http = require 'http'
 fs = require 'fs'
 path = require 'path'
-
-module.exports.SassColourLover = {}
-
-class module.exports.SassColourLover
-
-  @start : ->
-
-    idFlag = /^(--id=)(.*)/
-
-    if module.exports.parameters.length > 0
-
-      id = null
-
-      for i in [0...module.exports.parameters.length]
-
-        result = idFlag.exec module.exports.parameters[i]
-
-        if result?
-
-          id = result[2]
-
-          if id?
-
-            for j in [0...module.exports.parameters.length]
-              module.exports.Palette.parameterize module.exports.parameters[j]
-
-            options =
-              hostname : module.exports.Palette.getHost()
-              path : "/api/palette/#{id}/?format=json"
-
-            request = http.request options, (response)->
-              module.exports.Palette.paletteCallback response
-            request.end()
-
-          else
-
-            console.log 'ERROR: No palette ID has been provided'
-
-          break
-
-    else
-
-      console.log 'ERROR: No palette ID has been provided'
-
-module.exports.SassColourLover.parameters = process.argv.slice 2
 
 module.exports.Palette = {}
 
@@ -256,3 +209,42 @@ class module.exports.Palette
 
     else
       console.log 'ERROR: Palette does not contain any colors!'
+
+parameters = process.argv.slice 2
+
+idFlag = /^(--id=)(.*)/
+
+if parameters.length > 0
+
+  id = null
+
+  for i in [0...parameters.length]
+
+    result = idFlag.exec parameters[i]
+
+    if result?
+
+      id = result[2]
+
+      if id?
+
+        for j in [0...parameters.length]
+          module.exports.Palette.parameterize parameters[j]
+
+        options =
+          hostname : module.exports.Palette.getHost()
+          path : "/api/palette/#{id}/?format=json"
+
+        request = http.request options, (response)->
+          module.exports.Palette.paletteCallback response
+        request.end()
+
+      else
+
+        console.log 'ERROR: No palette ID has been provided'
+
+      break
+
+else
+
+  console.log 'ERROR: No palette ID has been provided'

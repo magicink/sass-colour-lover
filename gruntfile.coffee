@@ -2,6 +2,7 @@ module.exports = (grunt)->
 
   grunt.loadNpmTasks 'grunt-coffeelint'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
+  grunt.loadNpmTasks 'grunt-contrib-uglify'
 
   grunt.initConfig
 
@@ -27,4 +28,18 @@ module.exports = (grunt)->
 
           './sass-colour-lover.js' : './src/coffee/sass-colour-lover.coffee'
 
-  grunt.registerTask 'default', ['coffeelint','coffee']
+    uglify :
+
+      options :
+
+        banner : "#! /usr/bin/env node\r\n"
+        beautify : true
+        mangle : false
+
+      build :
+
+        files :
+
+          './sass-colour-lover.js' : './sass-colour-lover.js'
+
+  grunt.registerTask 'default', ['coffeelint','coffee','uglify']
