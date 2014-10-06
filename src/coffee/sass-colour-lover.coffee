@@ -1,6 +1,5 @@
 ###
-# Uses the COLOURLovers Palette and Color API to dynamcally generate a
-# Sass variable stylesheet.
+# Use COLOURLover's API to auto-magically populate your Sass stylesheets.
 ###
 
 'use strict'
@@ -25,6 +24,38 @@ class module.exports.Palette
   @totalColors : 0
   @url : ''
   @queried : false
+
+  ###
+  # Getters
+  ###
+
+  @getCount : ->
+    @colorCount
+
+  @getHost : ->
+    @hostname
+
+  @getTotalColors : ->
+    @totalColors
+
+  @getColorByTitle : (title)->
+    return color for color in @colors when color.title is title
+
+  ###
+  # Setters
+  ###
+
+  @setAuthor : (@author)->
+
+  @setFile : (@file)->
+
+  @setFormat : (@format)->
+
+  @setTitle : (@title)->
+
+  @setTotalColors : (@totalColors)->
+
+  @setUrl : (@url)->
 
   @addColor : (title, hex, rgb)->
 
@@ -72,38 +103,6 @@ class module.exports.Palette
         title = module.exports.Palette.stripTrailingDashes title
 
     return title
-  
-  ###
-  # Getters
-  ###
-
-  @getCount : ->
-    @colorCount
-
-  @getHost : ->
-    @hostname
-
-  @getTotalColors : ->
-    @totalColors
-
-  @getColorByTitle : (title)->
-    return color for color in @colors when color.title is title
-
-  ###
-  # Setters
-  ###
-
-  @setAuthor : (@author)->
-
-  @setFile : (@file)->
-
-  @setFormat : (@format)->
-
-  @setTitle : (@title)->
-
-  @setTotalColors : (@totalColors)->
-
-  @setUrl : (@url)->
 
   @incrementCount : ->
     @colorCount++
@@ -132,6 +131,10 @@ class module.exports.Palette
         console.log error
       else
         console.log "Successfully created #{@file}"
+
+  ###
+  # This method decides how command line arguments are handled
+  ###
 
   @parameterize : (parameter)->
     option = /^--(file|format)=(.*)/.exec parameter
@@ -209,6 +212,10 @@ class module.exports.Palette
 
     else
       console.log 'ERROR: Palette does not contain any colors!'
+
+###
+# Command-Line Interface
+###
 
 parameters = process.argv.slice 2
 

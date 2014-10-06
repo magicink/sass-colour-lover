@@ -9,22 +9,7 @@ module.exports.Palette = function() {
     return Palette.author = "", Palette.colorCount = 0, Palette.colors = [], Palette.file = "_palette.scss", 
     Palette.format = "rgb", Palette.hostname = "www.colourlovers.com", Palette.paletteID = null, 
     Palette.tabSize = 0, Palette.title = "", Palette.totalColors = 0, Palette.url = "", 
-    Palette.queried = !1, Palette.addColor = function(title, hex, rgb) {
-        return title = module.exports.Palette.stripTrailingDashes(title), title = module.exports.Palette.individualize(title, title), 
-        title += ":", title.length > this.tabSize && (this.tabSize = title.length), this.colors.push({
-            title: title,
-            hex: hex,
-            rgb: rgb
-        });
-    }, Palette.individualize = function(title, base, count) {
-        var existingColor, modifiedTitle;
-        return null == base && (base = ""), null == count && (count = 1), existingColor = module.exports.Palette.getColorByTitle(title), 
-        null != existingColor && (modifiedTitle = "" + base + "-" + count, title = module.exports.Palette.individualize(modifiedTitle, base, count + 1)), 
-        title;
-    }, Palette.stripTrailingDashes = function(title) {
-        return title.length > 1 && "-" === title.substr(-1) && (title = title.substr(0, title.length - 1), 
-        title = module.exports.Palette.stripTrailingDashes(title)), title;
-    }, Palette.getCount = function() {
+    Palette.queried = !1, Palette.getCount = function() {
         return this.colorCount;
     }, Palette.getHost = function() {
         return this.hostname;
@@ -46,6 +31,21 @@ module.exports.Palette = function() {
         this.totalColors = totalColors;
     }, Palette.setUrl = function(url) {
         this.url = url;
+    }, Palette.addColor = function(title, hex, rgb) {
+        return title = module.exports.Palette.stripTrailingDashes(title), title = module.exports.Palette.individualize(title, title), 
+        title += ":", title.length > this.tabSize && (this.tabSize = title.length), this.colors.push({
+            title: title,
+            hex: hex,
+            rgb: rgb
+        });
+    }, Palette.individualize = function(title, base, count) {
+        var existingColor, modifiedTitle;
+        return null == base && (base = ""), null == count && (count = 1), existingColor = module.exports.Palette.getColorByTitle(title), 
+        null != existingColor && (modifiedTitle = "" + base + "-" + count, title = module.exports.Palette.individualize(modifiedTitle, base, count + 1)), 
+        title;
+    }, Palette.stripTrailingDashes = function(title) {
+        return title.length > 1 && "-" === title.substr(-1) && (title = title.substr(0, title.length - 1), 
+        title = module.exports.Palette.stripTrailingDashes(title)), title;
     }, Palette.incrementCount = function() {
         return this.colorCount++;
     }, Palette.writeFile = function() {
