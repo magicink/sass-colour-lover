@@ -1,24 +1,17 @@
 ###
 # Uses the COLOURLovers Palette and Color API to dynamcally generate a
 # Sass variable stylesheet.
-#
-# Usage: node cl-paletteto-sass.js
-#
-# id:       The unique ID of the palette provided by COLOURLovers
-#
-# file:     The file (including the path) that will be generated. (default:
-#           './_colors.scss')
-#
-# format:   Determines whether colors are written in RGB or hexidecimal
-#           format. (default: 'rgb') 
 ###
 
 http = require 'http'
 fs = require 'fs'
 
-parameters = process.argv.slice 2
+SCL = {}
+SassColourLover.Palette = {}
 
-class Palette
+SassColourLover.parameters = process.argv.slice 2
+
+class SassColourLover.Palette
 
   @author : ''
   @colorCount : 0
@@ -35,6 +28,9 @@ class Palette
 
   @addColor : (title, hex, rgb)->
 
+    title = SassColourLover.Palette.stripTrailingDashes title
+    title = SassColourLover.Palette.individualize title, title
+
     if title.length > @tabSize
       @tabSize = title.length
 
@@ -42,6 +38,41 @@ class Palette
       title : title
       hex : hex
       rgb : rgb
+
+  ###
+  # This method ensures that Sass variable names are unique.
+  ###
+
+  @individualize : (title, base = '', count = 1)->
+
+
+    existingColor = SassColourLover.Palette.getColorByTitle title
+
+    if existingColor?
+      # A duplicate title has been found
+      # We have to modify the title.
+
+      modifiedTitle = "#{base}-#{count}"
+
+      title = SassColourLover.Palette.individualize
+        modifiedTitle,
+        base,
+        count + 1
+    
+    return title
+
+  ###
+  # Fix titles that end in '-'
+  ###
+
+  @stripTrailingDashes : (title)->
+    if title.length > 1
+
+      if title.substr(-1) is '-'
+        title = title.substr 0, title.length - 1
+        title = SassColourLover.Palette.stripTrailingDashes title
+
+    return title
   
   ###
   # Getters
@@ -55,6 +86,9 @@ class Palette
 
   @getTotalColors : ->
     @totalColors
+
+  @getColorByTitle : (title)->
+    return color for color in @colors when color.title is title
 
   ###
   # Setters
@@ -100,84 +134,85 @@ class Palette
       else
         console.log "Successfully created #{@file}"
 
-paletteCallback = (response)->
+  @parameterize : (parameter)->
 
-  if response.statusCode is 200
-    paletteData = ''
+    option = /^--(file|format)=(.*)/.exec parameter
 
-    response.on 'data', (chunk)->
-      paletteData += chunk
+    if option?
 
-    response.on 'end', ->
-      palette = {}
+      switch option[1]
 
-      palette = JSON.parse(paletteData)[0]
+        when 'file'
+          if option[2]?
+            SassColourLover.Palette.setFile option[2]
+        when 'format'
+          if option[2]?
+            SassColourLover.Palette.setFormat option[2]
 
-      if (typeof palette) isnt 'undefined'
-        Palette.setAuthor palette.userName
-        Palette.setTitle palette.title
-        Palette.setUrl palette.url
+  @paletteCallback : (response)->
 
-        colorsCallback palette.colors
+    if response.statusCode is 200
+      paletteData = ''
 
-      else
-        console.log 'ERROR: No matching palette was found'
+      response.on 'data', (chunk)->
+        paletteData += chunk
 
-colorsCallback = (colors)->
+      response.on 'end', ->
+        palette = {}
 
-  if (Object.prototype.toString.call colors) is '[object Array]'
+        palette = JSON.parse(paletteData)[0]
 
-    Palette.setTotalColors colors.length
+        if (typeof palette) isnt 'undefined'
+          SassColourLover.Palette.setAuthor palette.userName
+          SassColourLover.Palette.setTitle palette.title
+          SassColourLover.Palette.setUrl palette.url
 
-    for color in colors
+          SassColourLover.Palette.colorsCallback palette.colors
 
-      options =
-        hostname : Palette.getHost()
-        path : "/api/color/#{color}?format=json"
+        else
+          console.log 'ERROR: No matching palette was found'
 
-      request = http.request options, (response)->
-        colorData = ''
+  @colorsCallback : (colors)->
 
-        response.on 'data', (chunk)->
-          colorData += chunk
+    if (Object.prototype.toString.call colors) is '[object Array]'
 
-        response.on 'end', ->
-          color = JSON.parse(colorData)[0]
-          title = color.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()
-          title = "$#{title}:"
-          hex = '#' + color.hex
-          rgb = "rgb(#{color.rgb.red},#{color.rgb.green},#{color.rgb.blue})"
+      SassColourLover.Palette.setTotalColors colors.length
 
-          Palette.addColor title, hex, rgb
+      for color in colors
 
-          Palette.incrementCount()
+        options =
+          hostname : SassColourLover.Palette.getHost()
+          path : "/api/color/#{color}?format=json"
 
-          count = Palette.getCount()
-          total = Palette.getTotalColors()
+        request = http.request options, (response)->
+          colorData = ''
 
-          if count is total
-            Palette.writeFile()
+          response.on 'data', (chunk)->
+            colorData += chunk
 
-      .end()
+          response.on 'end', ->
+            color = JSON.parse(colorData)[0]
+            title = color.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()
+            title = "$#{title}"
+            hex = '#' + color.hex
+            rgb = "rgb(#{color.rgb.red},"+
+              "#{color.rgb.green}," +
+              "#{color.rgb.blue})"
 
-  else
+            SassColourLover.Palette.addColor title, hex, rgb
 
-    console.log 'ERROR: Palette does not contain any colors!'
+            SassColourLover.Palette.incrementCount()
 
-parameterize = (parameter)->
+            count = SassColourLover.Palette.getCount()
+            total = SassColourLover.Palette.getTotalColors()
 
-  option = /^--(file|format)=(.*)/.exec parameter
+            if count is total
+              SassColourLover.Palette.writeFile()
 
-  if option?
+        .end()
 
-    switch option[1]
-
-      when 'file'
-        if option[2]?
-          Palette.setFile option[2]
-      when 'format'
-        if option[2]?
-          Palette.setFormat option[2]
+    else
+      console.log 'ERROR: Palette does not contain any colors!'
 
 ###
 # The handling of the ID parameter is done outside of parameterize() to
@@ -186,36 +221,36 @@ parameterize = (parameter)->
 
 idflag = /^(--id=)(.*)/
 
-if parameters.length > 0
+if SassColourLover.parameters.length > 0
 
-  hasID = false
   id = null
 
-  for i in [0...parameters.length]
+  for i in [0...SassColourLover.parameters.length]
 
-    result = idflag.exec parameters[i]
+    result = idflag.exec SassColourLover.parameters[i]
 
     if result?
-      hasID = true
+
       id = result[2]
-      break;
 
-  if hasID is true and id?
+      if id?
 
-    for j in [0...parameters.length]
+        for j in [0...SassColourLover.parameters.length]
+          SassColourLover.Palette.parameterize SassColourLover.parameters[j]
 
-      parameterize parameters[j]
+        options =
+          hostname : SassColourLover.Palette.getHost()
+          path : "/api/palette/#{id}/?format=json"
 
-    options =
-      hostname : Palette.getHost()
-      path : "/api/palette/#{id}/?format=json"
+        request = http.request options, (response)->
+          SassColourLover.Palette.paletteCallback response
+        request.end()
 
-    request = http.request options, paletteCallback
-    request.end()
+      else
 
-  else
+        console.log 'ERROR: No palette ID has been provided'
 
-    console.log 'ERROR: No palette ID has been provided'
+      break
 
 else
 

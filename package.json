@@ -19,5 +19,10 @@
   "bugs": {
     "url": "https://github.com/magicink/sass-colour-lover/issues"
   },
-  "homepage": "https://github.com/magicink/sass-colour-lover"
+  "homepage": "https://github.com/magicink/sass-colour-lover",
+  "devDependencies": {
+    "coffeelint": "^1.6.0",
+    "grunt": "^0.4.5",
+    "grunt-coffeelint": "0.0.13"
+  }
 }
