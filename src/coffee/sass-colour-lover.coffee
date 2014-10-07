@@ -27,6 +27,7 @@ class module.exports.Palette
   @multi : true
   @palettes : null
   @errors : 0
+  @sep : '-'
 
   ###
   # Getters
@@ -49,6 +50,9 @@ class module.exports.Palette
 
   @getColorByTitle : (title)->
     return color for color in @colors when color.title is title
+
+  @getSep : ->
+    @sep
 
   ###
   # Setters
@@ -82,9 +86,8 @@ class module.exports.Palette
 
     title = module.exports.Palette.trimHyphens title
     title = 'color' if title.length is 0
-    title = module.exports.Palette.individualize title
+    title = module.exports.Palette.individualize title, title
     title = module.exports.Palette.spellLeadingNumber title
-    title = '$' + title + ':'
 
     if title.length > @tabSize
       @tabSize = title.length
@@ -100,9 +103,6 @@ class module.exports.Palette
 
   @individualize : (title, base = '', count = 1)->
 
-    if base is ''
-      base = title
-
     existingColor = module.exports.Palette.getColorByTitle title
 
     if existingColor?
@@ -111,8 +111,7 @@ class module.exports.Palette
 
       modifiedTitle = "#{base}-#{count}"
 
-      title = module.exports.Palette.individualize modifiedTitle,
-        base, count + 1
+      title = module.exports.Palette.individualize modifiedTitle, base, count+1
     
     return title
 
@@ -121,7 +120,13 @@ class module.exports.Palette
   ###
 
   @trimHyphens : (title)->
-    title.replace /^\-|\-$/g, ''
+    matches = /^-|-$/.exec title
+
+    if matches?
+      
+      title = module.exports.Palette.trimHyphens title.replace /^\-|\-$/g, ''
+
+    return title
 
   ###
   # Fix titles that have leading numbers
@@ -151,7 +156,7 @@ class module.exports.Palette
 
     for color in @colors
 
-      output += color.title
+      output += '$' + color.title + ':'
 
       bufferSize = @tabSize - color.title.length
       bufferSize += 4
