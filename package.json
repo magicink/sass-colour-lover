@@ -1,7 +1,7 @@
 {
   "name": "sass-colour-lover",
-  "version": "1.0.0",
-  "description": "Use the COLOURLovers API to auto-magically populate your Sass stylesheets.",
+  "version": "1.0.0-alpha",
+  "description": "Auto-magically generate Sass color variables using palettes from COLOURLovers",
   "main": "sass-colour-lover.js",
   "scripts": {
     "test": "grunt test"

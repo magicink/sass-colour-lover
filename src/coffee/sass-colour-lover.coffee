@@ -24,6 +24,7 @@ class module.exports.Palette
   @totalColors : 0
   @url : ''
   @append : false
+  @multi : true
   @palettes : null
   @errors : 0
 
@@ -39,6 +40,9 @@ class module.exports.Palette
 
   @getHost : ->
     @hostname
+
+  @getMulti : ->
+    @multi
 
   @getTotalColors : ->
     @totalColors
@@ -64,6 +68,8 @@ class module.exports.Palette
 
   @setFormat : (@colorFormat)->
 
+  @setMulti : (@multi)->
+
   @setPalettes : (@palettes)->
 
   @setTitle : (@title)->
@@ -74,9 +80,11 @@ class module.exports.Palette
 
   @addColor : (title, hex, rgb)->
 
-    title = module.exports.Palette.stripTrailingDashes title
-    title = module.exports.Palette.individualize title, title
-    title += ':'
+    title = module.exports.Palette.trimHyphens title
+    title = 'color' if title.length is 0
+    title = module.exports.Palette.individualize title
+    title = module.exports.Palette.spellLeadingNumber title
+    title = '$' + title + ':'
 
     if title.length > @tabSize
       @tabSize = title.length
@@ -92,6 +100,8 @@ class module.exports.Palette
 
   @individualize : (title, base = '', count = 1)->
 
+    if base is ''
+      base = title
 
     existingColor = module.exports.Palette.getColorByTitle title
 
@@ -110,12 +120,19 @@ class module.exports.Palette
   # Fix titles that end in '-'
   ###
 
-  @stripTrailingDashes : (title)->
-    if title.length > 1
+  @trimHyphens : (title)->
+    title.replace /^\-|\-$/g, ''
 
-      if title.substr(-1) is '-'
-        title = title.substr 0, title.length - 1
-        title = module.exports.Palette.stripTrailingDashes title
+  ###
+  # Fix titles that have leading numbers
+  ###
+
+  @spellLeadingNumber : (title)->
+    numberFlag = /^(\d)(.*)/
+    match = numberFlag.exec title
+
+    if match?
+      title = "_#{title}"
 
     return title
 
@@ -127,7 +144,8 @@ class module.exports.Palette
 
   @writeFile : ->
 
-    output = "// Palette: #{@title} by #{@author}\r\n"
+    output = "// Palette: #{@title}\r\n"
+    output += "// Author: #{@author}\r\n"
     output += "// #{@url}\r\n"
     output += "\r\n"
 
@@ -154,11 +172,14 @@ class module.exports.Palette
 
         module.exports.Palette.setAppend true
 
-        if module.exports.Palette.palettes.length > 0
+        if module.exports.Palette.palettes?
 
-          nextPalette = module.exports.Palette.palettes.pop()
+          if module.exports.Palette.palettes.length  > 0 and
+          module.exports.Palette.getMulti() is true
 
-          module.exports.Palette.requestPalette nextPalette
+            nextPalette = module.exports.Palette.palettes.pop()
+
+            module.exports.Palette.requestPalette nextPalette
 
     else if module.exports.Palette.getAppend() is true
 
@@ -180,7 +201,7 @@ class module.exports.Palette
   ###
 
   @parameterize : (parameter)->
-    option = /^--(file|format)=(.*)/.exec parameter
+    option = /^--(file|color)=(.*)/.exec parameter
 
     if option?
 
@@ -189,7 +210,7 @@ class module.exports.Palette
         when 'file'
           if option[2]?
             module.exports.Palette.setFile option[2]
-        when 'format'
+        when 'color'
           if option[2]?
             module.exports.Palette.setFormat option[2]
 
@@ -250,7 +271,6 @@ class module.exports.Palette
           response.on 'end', ->
             color = JSON.parse(colorData)[0]
             title = color.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()
-            title = "$#{title}"
             hex = '#' + color.hex
             rgb = "rgb(#{color.rgb.red},"+
               "#{color.rgb.green}," +
@@ -279,6 +299,7 @@ parameters = process.argv.slice 2
 
 id = null
 isMulti = false
+isURL = false
 
 idFlag = /^(--ids=)(.*)/
 urlFlag = /^(http:\/\/|)(www\.|)colourlovers\.com\/palette\/(\d+)\//
@@ -296,6 +317,7 @@ if parameters.length > 0
       if matches?
 
         id = matches[3]
+        isURL = true
 
         break
 
@@ -305,18 +327,27 @@ if parameters.length > 0
 
       break
 
+###
+# The script requires an ID or URL
+###
+
 if id?
 
-  # if the id contains commas
+  for parameter in parameters
 
-  multiFlag = /\,/
-  multi = multiFlag.exec id
+    module.exports.Palette.parameterize parameter
 
-  if multi?
-    isMulti = true
-    module.exports.Palette.setPalettes multi.input.split ','
+  ###
+  # Avoid performing string splitting on URL sources
+  ###
 
-  if isMulti is true
+  if isURL is false
+    multiFlag = /\,/
+    multi = multiFlag.exec id
+
+    if multi?
+      module.exports.Palette.setMulti true
+      module.exports.Palette.setPalettes multi.input.split ','
 
     id = module.exports.Palette.palettes.pop()
 
