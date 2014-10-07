@@ -138,7 +138,7 @@ sass-colour-lover --ids=72313 --color=hex
 
 Generates
 
-``` sass
+```sass
 // Palette: cutty sark.
 // Author: bijouloveshues
 // http://www.colourlovers.com/palette/72313/cutty_sark.
@@ -158,7 +158,7 @@ $maritime-relic:         #285E7E;
 
 Numbers cannot be used as the first character of a variable name. If detected, the string 'color-' is appended to the start of the variable name.
 
-```
+```sass
 // Palette: 2
 // Author: heheherrr
 // http://www.colourlovers.com/palette/3508938/2
@@ -174,7 +174,7 @@ $once-was:    rgb(242,176,160);
 
 If a duplicate name is detected, a simple counter is appended to the end of all variables that share the name.
 
-``` sass
+```sass
 // Palette: That's Not Butter!?!
 // Author: retsof
 // http://www.colourlovers.com/palette/223567/Thats_Not_Butter!!
@@ -194,7 +194,7 @@ Sometimes names are entirely comprised of invalid characters. In which case, the
 
 They exist.
 
-``` sass
+```sass
 // Palette: ๓๏ภ๏t๏ภ๏ยร * l๏שє
 // Author: -Yonder-
 // http://www.colourlovers.com/palette/3508899/๓๏ภ๏t๏ภ๏ยร_*_l๏שє
