@@ -39,6 +39,9 @@ class module.exports.Palette
   @getCount : ->
     @colorCount
 
+  @getFilepath : ->
+    @file
+
   @getHost : ->
     @hostname
 
@@ -97,6 +100,23 @@ class module.exports.Palette
       hex : hex
       rgb : rgb
 
+  @parseFilePath : ->
+
+    destination = {}
+
+    palette = module.exports.Palette
+    filePath = palette.getFilepath()
+
+    if (filePath is '') or (not filePath?)
+      filePath = './_palettle.scss'
+
+    path.normalize filePath
+
+    destination.file = filePath.substring filePath.lastIndexOf('/') + 1
+    destination.path = filePath.substring 0, filePath.lastIndexOf('/')
+
+    return destination
+
   ###
   # This method ensures that Sass variable names are unique.
   ###
@@ -148,6 +168,12 @@ class module.exports.Palette
     @errors++
 
   @writeFile : ->
+
+    palette = module.exports.Palette
+    destination = palette.parseFilePath()
+
+    fs.stat destination.path, (err, stats)->
+      console.log stats
 
     output = "// Palette: #{@title}\r\n"
     output += "// Author: #{@author}\r\n"
