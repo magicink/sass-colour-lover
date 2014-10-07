@@ -6,7 +6,7 @@ Auto-magically generate Sass color variables using palettes from [COLOURLovers][
 
 #### `npm` (recommended)
 
-```bash
+```sh
 npm install -g sass-colour-lover
 ```
 
@@ -14,31 +14,31 @@ npm install -g sass-colour-lover
 
 Clone from Github:
 
-```bash
+```sh
 git clone git@github.com:magicink/sass-colour-lover.git
 ```
 
 Navigate into the project directory and the build dependencies:
 
-```bash
+```sh
 npm install
 ```
 
 Build
 
-```bash
+```sh
 grunt
 ```
 
 Install the module globally (may require administrative access)
 
-```bash
+```sh
 npm install . -g
 ```
 
 Or, if you prefer, link it (may require administrative access)
 
-```bash
+```sh
 npm link
 ```
 
@@ -74,7 +74,7 @@ $purple-day:          rgb(136,12,114);
 
 If you would like to generate Sass variables from multiple palettes, you can use the `--ids=` parameter. Pass the IDs as a comma seperated list.
 
-```bash
+```sh
 sass-colour-lover --ids=649208,32049,12345
 ```
 
