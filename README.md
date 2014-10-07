@@ -192,7 +192,7 @@ Sometimes names are entirely comprised of invalid characters. In which case, the
 
 #### Names that are crazy
 
-They exist.
+They exist... and we love them anyway.
 
 ```sass
 // Palette: ๓๏ภ๏t๏ภ๏ยร * l๏שє
