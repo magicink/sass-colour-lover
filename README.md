@@ -54,8 +54,8 @@ The easiest way is go to [COLOURLovers][cl] and copy the address of a palette yo
 sass-colour-lover http://www.colourlovers.com/palette/3508876/Jujubee
 
 // These will also work:
-// http://colourlovers.com/palettes/<id>
-// www.colourlovers.com/palettes/<id>
+// http://colourlovers.com/palette/<id>
+// www.colourlovers.com/palette/<id>
 ```
 
 This generates a Sass file called `_palette.scss` in the current working directory. The contents of this file appear like this:
