@@ -1,6 +1,6 @@
 # sass-colour-lover
 
-Auto-magically generate Sass color variables using palettes from COLOURLovers.
+Auto-magically generate Sass color variables using palettes from [COLOURLovers][cl].
 
 ### Installation
 
@@ -46,8 +46,6 @@ The easiest way is go to [COLOURLovers][cl] and copy the address of a palette yo
 
 ```
 sass-colour-lover http://www.colourlovers.com/palette/3508876/Jujubee
-
-# 
 ```
 
 This generates a Sass file called `_palette.scss` in the current working directory. The contents of this file appear like this:
