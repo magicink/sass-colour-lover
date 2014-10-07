@@ -4,7 +4,9 @@ Auto-magically generate Sass color variables using palettes from [COLOURLovers][
 
 ### Installation
 
-#### `npm` (recommended)
+#### `npm`
+
+For day-to-day use, I recommend using `npm` to install `sass-colour-lover` globally.
 
 ```sh
 npm install -g sass-colour-lover
@@ -12,7 +14,9 @@ npm install -g sass-colour-lover
 
 #### `git`
 
-Clone from Github:
+If you plan on contributing to this project, you can install `sass-colour-lover` locally using `git`.
+
+Clone the project:
 
 ```sh
 git clone git@github.com:magicink/sass-colour-lover.git
