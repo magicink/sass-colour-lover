@@ -156,7 +156,7 @@ $maritime-relic:         #285E7E;
 
 ### Variable Names
 
-`sass-colour-lover` tries its very best to generate variable names based on the names selected by the palette's authors. That being said [COLOURLovers][cl] Allows for some pretty gnarly naming conventions that sometimes do not mesh well with Sass. There are likely to be edge cases that haven't been caught. Here are some things that get sanitized by `sass-colour-lover`
+`sass-colour-lover` tries its very best to generate variable names based on the names selected by the palette's authors. That being said [COLOURLovers][cl] allows for some pretty gnarly naming conventions that sometimes do not mesh well with Sass. There are likely to be edge cases that haven't been caught. Here are some things that get sanitized by `sass-colour-lover`
 
 #### Names with Leading Numbers
 
