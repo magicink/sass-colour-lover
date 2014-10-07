@@ -4,13 +4,13 @@ Auto-magically generate Sass color variables using palettes from [COLOURLovers][
 
 ### Installation
 
-#### NPM (recommended)
+#### `npm` (recommended)
 
 ```bash
 npm install -g sass-colour-lover
 ```
 
-#### Git
+#### `git`
 
 Clone from Github:
 
@@ -205,5 +205,14 @@ $l----l:    rgb(121,73,116);
 $l:         rgb(168,203,166);
 $l-1:       rgb(159,116,132);
 ```
+
+### In the Works
+
+* Appending output to an existing stylesheet
+* Add option to use a different type of divider (i.e. `variable_name` as opposed to `variable-name`)
+
+### Known Issues
+
+* Writing to a directory that does not exist produces an error.
 
 [cl]: http://www.colourlovers.com
