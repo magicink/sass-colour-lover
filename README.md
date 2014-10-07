@@ -53,9 +53,9 @@ The easiest way is go to [COLOURLovers][cl] and copy the address of a palette yo
 ```
 sass-colour-lover http://www.colourlovers.com/palette/3508876/Jujubee
 
-// These will also work:
-// http://colourlovers.com/palette/<id>
-// www.colourlovers.com/palette/<id>
+# These will also work:
+# http://colourlovers.com/palette/<id>
+# www.colourlovers.com/palette/<id>
 ```
 
 This generates a Sass file called `_palette.scss` in the current working directory. The contents of this file appear like this:
@@ -119,11 +119,11 @@ $green-clay:           rgb(140,125,28);
 Specifies where you would like to save your file.
 
 ```
-// This produces a file called '-colors.scss'
+# This produces a file called '-colors.scss'
 
 sass-colour-lover --ids=3143 --file=_colors.scss
 
-// Same file, one directory up
+# Same file, one directory up
 
 sass-colour-lover --ids=3143 --file=../_colors.scss
 ```
