@@ -152,7 +152,7 @@ $maritime-relic:         #285E7E;
 
 #### Names with Leading Numbers
 
-Numbers cannot be used as the first character of a variable name. If detected, an underscore is appended to the start of the variable name.
+Numbers cannot be used as the first character of a variable name. If detected, the string 'color-' is appended to the start of the variable name.
 
 #### Duplicate Names
 
