@@ -348,8 +348,7 @@ if id?
     if multi?
       module.exports.Palette.setMulti true
       module.exports.Palette.setPalettes multi.input.split ','
-
-    id = module.exports.Palette.palettes.pop()
+      id = module.exports.Palette.palettes.pop()
 
     module.exports.Palette.requestPalette id
 
