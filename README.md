@@ -6,7 +6,7 @@ Auto-magically generate Sass color variables using palettes from [COLOURLovers][
 
 #### NPM (recommended)
 
-```
+```bash
 npm install -g sass-colour-lover
 ```
 
@@ -14,7 +14,7 @@ npm install -g sass-colour-lover
 
 Clone from Github:
 
-```
+```bash
 git clone git@github.com:magicink/sass-colour-lover.git
 ```
 
@@ -26,19 +26,19 @@ npm install
 
 Build
 
-```
+```bash
 grunt
 ```
 
 Install the module globally (may require administrative access)
 
-```
+```bash
 npm install . -g
 ```
 
 Or, if you prefer, link it (may require administrative access)
 
-```
+```bash
 npm link
 ```
 
@@ -52,11 +52,15 @@ The easiest way is go to [COLOURLovers][cl] and copy the address of a palette yo
 
 ```
 sass-colour-lover http://www.colourlovers.com/palette/3508876/Jujubee
+
+// These will also work:
+// http://colourlovers.com/palettes/<id>
+// www.colourlovers.com/palettes/<id>
 ```
 
 This generates a Sass file called `_palette.scss` in the current working directory. The contents of this file appear like this:
 
-``` sass
+```sass
 // Palette: Jujubee
 // Author: jaymepollock
 // http://www.colourlovers.com/palette/3508876/Jujubee
@@ -70,13 +74,13 @@ $purple-day:          rgb(136,12,114);
 
 If you would like to generate Sass variables from multiple palettes, you can use the `--ids=` parameter. Pass the IDs as a comma seperated list.
 
-```
+```bash
 sass-colour-lover --ids=649208,32049,12345
 ```
 
 The contents of the generated file appear like so:
 
-``` sass
+```sass
 // Palette: Spavian
 // Author: Spammy
 // http://www.colourlovers.com/palette/12345/Spavian
