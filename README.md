@@ -158,6 +158,18 @@ $maritime-relic:         #285E7E;
 
 Numbers cannot be used as the first character of a variable name. If detected, the string 'color-' is appended to the start of the variable name.
 
+```
+// Palette: 2
+// Author: heheherrr
+// http://www.colourlovers.com/palette/3508938/2
+
+$spirit:      rgb(253,216,189);
+$flagwhite:   rgb(233,214,212);
+$fd5541:      rgb(253,85,65);
+$color-1:     rgb(41,44,65);
+$once-was:    rgb(242,176,160);
+```
+
 #### Duplicate Names
 
 If a duplicate name is detected, a simple counter is appended to the end of all variables that share the name.
