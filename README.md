@@ -123,7 +123,7 @@ $green-clay:           rgb(140,125,28);
 Specifies where you would like to save your file.
 
 ```
-# This produces a file called '-colors.scss'
+# This produces a file called '_colors.scss'
 
 sass-colour-lover --ids=3143 --file=_colors.scss
 
