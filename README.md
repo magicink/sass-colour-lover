@@ -4,7 +4,7 @@ Auto-magically generate Sass color variables using palettes from COLOURLovers.
 
 ### Installation
 
-** Notice: ** The installation process will change once this module is made available over NPM.
+**Notice:** The installation process will change once this module is made available over NPM.
 
 #### NPM (recommended)
 
