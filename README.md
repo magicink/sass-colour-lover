@@ -30,7 +30,13 @@ Build
 grunt
 ```
 
-Make global
+Install the module globally (may require administrative access)
+
+```
+npm install . -g
+```
+
+Or, if you prefer, link it (may require administrative access)
 
 ```
 npm link
@@ -109,11 +115,11 @@ $green-clay:           rgb(140,125,28);
 Specifies where you would like to save your file.
 
 ```
-# This produces a file called '-colors.scss'
+// This produces a file called '-colors.scss'
 
 sass-colour-lover --ids=3143 --file=_colors.scss
 
-# Same file, one directory up
+// Same file, one directory up
 
 sass-colour-lover --ids=3143 --file=../_colors.scss
 ```
@@ -146,7 +152,7 @@ $maritime-relic:         #285E7E;
 
 #### Names with Leading Numbers
 
-Numbers cannot be used as the first character of a variable name. If detected, an underscore (_) is appended to the start of the variable name.
+Numbers cannot be used as the first character of a variable name. If detected, an underscore is appended to the start of the variable name.
 
 #### Duplicate Names
 

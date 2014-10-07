@@ -87,7 +87,7 @@ class module.exports.Palette
     title = module.exports.Palette.trimHyphens title
     title = 'color' if title.length is 0
     title = module.exports.Palette.individualize title, title
-    title = module.exports.Palette.spellLeadingNumber title
+    title = module.exports.Palette.fixLeadingNumber title
 
     if title.length > @tabSize
       @tabSize = title.length
@@ -132,12 +132,12 @@ class module.exports.Palette
   # Fix titles that have leading numbers
   ###
 
-  @spellLeadingNumber : (title)->
+  @fixLeadingNumber : (title)->
     numberFlag = /^(\d)(.*)/
     match = numberFlag.exec title
 
     if match?
-      title = "_#{title}"
+      title = "color-#{title}"
 
     return title
 
