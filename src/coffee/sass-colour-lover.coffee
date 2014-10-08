@@ -211,6 +211,8 @@ class module.exports.Palette
 
   @writeFile : ->
 
+    palette = module.exports.Palette
+
     output = "// Palette: #{@title}\r\n"
     output += "// Author: #{@author}\r\n"
     output += "// #{@url}\r\n"
@@ -230,25 +232,25 @@ class module.exports.Palette
       output += value
       output += ';\r\n'
 
-    if module.exports.Palette.getAppend() is false
+    if palette.getAppend() is false
 
       fs.writeFile @file, output, (error)->
 
         if error?
           console.log error
 
-        module.exports.Palette.setAppend true
+        palette.setAppend true
 
-        if module.exports.Palette.palettes?
+        if palette.palettes?
 
-          if module.exports.Palette.palettes.length  > 0 and
-          module.exports.Palette.getMulti() is true
+          if palette.palettes.length  > 0 and
+          palette.getMulti() is true
 
-            nextPalette = module.exports.Palette.palettes.pop()
+            nextPalette = palette.palettes.pop()
 
-            module.exports.Palette.requestPalette nextPalette
+            palette.requestPalette nextPalette
 
-    else if module.exports.Palette.getAppend() is true
+    else if palette.getAppend() is true
 
       output = "\r\n" + output
 
@@ -257,11 +259,11 @@ class module.exports.Palette
         if error?
           console.log error
 
-        if module.exports.Palette.palettes.length > 0
+        if palette.palettes.length > 0
 
-          nextPalette = module.exports.Palette.palettes.pop()
+          nextPalette = palette.palettes.pop()
 
-          module.exports.Palette.requestPalette nextPalette
+          palette.requestPalette nextPalette
 
   ###
   # This method decides how command line arguments are handled
@@ -380,6 +382,7 @@ isURL = false
 
 idFlag = /^(--ids=)(.*)/
 urlFlag = /^(http:\/\/|)(www\.|)colourlovers\.com\/palette\/(\d+)\//
+appendFlag = /^--append$/
 
 if parameters.length > 0
 
