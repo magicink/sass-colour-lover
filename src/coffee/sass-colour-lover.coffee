@@ -114,6 +114,8 @@ class module.exports.Palette
 
     destination.file = filePath.substring filePath.lastIndexOf('/') + 1
     destination.path = filePath.substring 0, filePath.lastIndexOf('/')
+    if destination.path is ''
+      destination.path = '.'
 
     return destination
 
@@ -172,8 +174,10 @@ class module.exports.Palette
     palette = module.exports.Palette
     destination = palette.parseFilePath()
 
-    fs.stat destination.path, (err, stats)->
-      console.log stats
+    if (fs.existsSync destination.path) is true
+      console.log 'path exists'
+    else
+      console.log 'path does not exists'
 
     output = "// Palette: #{@title}\r\n"
     output += "// Author: #{@author}\r\n"
