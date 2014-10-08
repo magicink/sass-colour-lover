@@ -217,6 +217,6 @@ $l-1:       rgb(159,116,132);
 
 ### Known Issues
 
-* Writing to a directory that does not exist produces an error.
+* --Writing to a directory that does not exist produces an error.-- (fixed)
 
 [cl]: http://www.colourlovers.com
