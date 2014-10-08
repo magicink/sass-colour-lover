@@ -277,11 +277,11 @@ class module.exports.Palette
 
       switch option[1]
 
-        when 'file='
+        when 'file'
           if option[2]?
             palette.setFile option[2]
 
-        when 'color='
+        when 'color'
           if option[2]?
             palette.setFormat option[2]
 
