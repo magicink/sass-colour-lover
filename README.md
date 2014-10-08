@@ -215,8 +215,4 @@ $l-1:       rgb(159,116,132);
 * Appending output to an existing stylesheet
 * Add option to use a different type of divider (i.e. `variable_name` as opposed to `variable-name`)
 
-### Known Issues
-
-* --Writing to a directory that does not exist produces an error.-- (fixed)
-
 [cl]: http://www.colourlovers.com
