@@ -4,8 +4,9 @@
 
 'use strict'
 
-http = require 'http'
 fs = require 'fs'
+http = require 'http'
+mkdirp = require 'mkdirp'
 path = require 'path'
 
 module.exports.Palette = {}
@@ -34,27 +35,35 @@ class module.exports.Palette
   ###
 
   @getAppend : ->
+
     @append
 
   @getCount : ->
+
     @colorCount
 
-  @getFilepath : ->
+  @getFilePath : ->
+
     @file
 
   @getHost : ->
+
     @hostname
 
   @getMulti : ->
+
     @multi
 
   @getTotalColors : ->
+
     @totalColors
 
   @getColorByTitle : (title)->
+
     return color for color in @colors when color.title is title
 
   @getSep : ->
+
     @sep
 
   ###
@@ -62,9 +71,11 @@ class module.exports.Palette
   ###
 
   @resetColors : ->
+
     @colors = []
 
   @resetCount : ->
+
     @colorCount = 0
 
   @setAppend : (@append)->
@@ -105,7 +116,7 @@ class module.exports.Palette
     destination = {}
 
     palette = module.exports.Palette
-    filePath = palette.getFilepath()
+    filePath = palette.getFilePath()
 
     if (filePath is '') or (not filePath?)
       filePath = './_palettle.scss'
@@ -142,6 +153,7 @@ class module.exports.Palette
   ###
 
   @trimHyphens : (title)->
+
     matches = /^-|-$/.exec title
 
     if matches?
@@ -155,6 +167,7 @@ class module.exports.Palette
   ###
 
   @fixLeadingNumber : (title)->
+
     numberFlag = /^(\d)(.*)/
     match = numberFlag.exec title
 
@@ -164,20 +177,39 @@ class module.exports.Palette
     return title
 
   @incrementCount : ->
+
     @colorCount++
 
   @incrementErrors : ->
+
     @errors++
 
-  @writeFile : ->
+  ###
+  # Checks to see if the destination path exists. If it doesn't, it attempts
+  # to build it.
+  ###
+
+  @buildPath : ->
 
     palette = module.exports.Palette
     destination = palette.parseFilePath()
 
     if (fs.existsSync destination.path) is true
-      console.log 'path exists'
+
+      palette.writeFile()
+
     else
-      console.log 'path does not exists'
+      mkdirp destination.path, (error)->
+        if error?
+          console.log error
+        else
+          palette.writeFile()
+
+  ###
+  # Creates and writes Sass to a file.
+  ###
+
+  @writeFile : ->
 
     output = "// Palette: #{@title}\r\n"
     output += "// Author: #{@author}\r\n"
@@ -236,31 +268,39 @@ class module.exports.Palette
   ###
 
   @parameterize : (parameter)->
+
+    palette = module.exports.Palette
+
     option = /^--(file|color)=(.*)/.exec parameter
 
     if option?
 
       switch option[1]
 
-        when 'file'
+        when 'file='
           if option[2]?
-            module.exports.Palette.setFile option[2]
-        when 'color'
+            palette.setFile option[2]
+
+        when 'color='
           if option[2]?
-            module.exports.Palette.setFormat option[2]
+            palette.setFormat option[2]
 
   @requestPalette : (id)->
 
+    palette = module.exports.Palette
+
     options =
-      hostname : module.exports.Palette.getHost()
+      hostname : palette.getHost()
       path : "/api/palette/#{id}/?format=json"
 
     request = http.request options, (response)->
-      module.exports.Palette.paletteCallback response
+      palette.paletteCallback response
 
     request.end()
 
   @paletteCallback : (response)->
+
+    palette = module.exports.Palette
 
     if response.statusCode is 200
 
@@ -270,31 +310,33 @@ class module.exports.Palette
         paletteData += chunk
 
       response.on 'end', ->
-        palette = {}
+        importedPalette = {}
 
-        palette = JSON.parse(paletteData)[0]
+        importedPalette = JSON.parse(paletteData)[0]
 
-        if (typeof palette) isnt 'undefined'
-          module.exports.Palette.setAuthor palette.userName
-          module.exports.Palette.setTitle palette.title
-          module.exports.Palette.setUrl palette.url
-          module.exports.Palette.colorsCallback palette.colors
+        if (typeof importedPalette) isnt 'undefined'
+          palette.setAuthor importedPalette.userName
+          palette.setTitle importedPalette.title
+          palette.setUrl importedPalette.url
+          palette.colorsCallback importedPalette.colors
 
         else
           console.log 'ERROR: No matching palette was found'
 
   @colorsCallback : (colors)->
 
+    palette = module.exports.Palette
+
     if (Object.prototype.toString.call colors) is '[object Array]'
 
-      module.exports.Palette.setTotalColors colors.length
-      module.exports.Palette.resetCount()
-      module.exports.Palette.resetColors()
+      palette.setTotalColors colors.length
+      palette.resetCount()
+      palette.resetColors()
 
       for color in colors
 
         options =
-          hostname : module.exports.Palette.getHost()
+          hostname : palette.getHost()
           path : "/api/color/#{color}?format=json"
 
         request = http.request options, (response)->
@@ -311,15 +353,15 @@ class module.exports.Palette
               "#{color.rgb.green}," +
               "#{color.rgb.blue})"
 
-            module.exports.Palette.addColor title, hex, rgb
+            palette.addColor title, hex, rgb
 
-            module.exports.Palette.incrementCount()
+            palette.incrementCount()
 
-            count = module.exports.Palette.getCount()
-            total = module.exports.Palette.getTotalColors()
+            count = palette.getCount()
+            total = palette.getTotalColors()
 
             if count is total
-              module.exports.Palette.writeFile()
+              palette.buildPath()
 
         request.end()
 
