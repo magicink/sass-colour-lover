@@ -1,6 +1,6 @@
 {
   "name": "sass-colour-lover",
-  "version": "1.0.2-alpha",
+  "version": "1.0.3-alpha",
   "description": "Auto-magically generate Sass color variables using palettes from COLOURLovers",
   "main": "sass-colour-lover.js",
   "scripts": {
