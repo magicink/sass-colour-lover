@@ -5,3 +5,7 @@ node_js:
 
 before_script:
   - npm install -g grunt_cli
+
+notifications:
+  email:
+    - magicink@gmail.com
