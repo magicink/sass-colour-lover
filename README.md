@@ -1,4 +1,7 @@
-# sass-colour-lover
+sass-colour-lover
+=================
+
+![Build Status](https://api.travis-ci.org/magicink/sass-colour-lover.svg?branch=master)
 
 Auto-magically generate Sass color variables using palettes from [COLOURLovers][cl].
 
