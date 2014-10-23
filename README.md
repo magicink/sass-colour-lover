@@ -2,6 +2,7 @@ sass-colour-lover
 =================
 
 ![Build Status](https://api.travis-ci.org/magicink/sass-colour-lover.svg?branch=master)
+[![Dependency Status](https://david-dm.org/magicink/sass-colour-lover.svg)](https://david-dm.org/magicink/sass-colour-lover)
 [![NPM version](https://badge.fury.io/js/sass-colour-lover.svg)](http://badge.fury.io/js/sass-colour-lover)
 
 Auto-magically generate Sass color variables using palettes from [COLOURLovers][cl].
