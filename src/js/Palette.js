@@ -12,22 +12,22 @@ export default {
       colors: [],
       error: null,
       get (success, failure) {
-        if (!failure) {
-          failure = (error) => {
-            console.log(error.toString())
-          }
-        }
-        if (!success) {
-          success = (data) => {
-            if (data.length === 1) {
-              data = data[0]
-              this.author = data.userName
-              this.title = data.title
-              let colors = data.colors
+        if (this.id && this.url) {
+          if (!failure) {
+            failure = (error) => {
+              console.log(error.toString())
             }
           }
-        }
-        if (this.id && this.url) {
+          if (!success) {
+            success = (data) => {
+              if (data.length === 1) {
+                data = data[0]
+                this.author = data.userName
+                this.title = data.title
+                let colors = data.colors
+              }
+            }
+          }
           fetch(this.url).then((response) => {
             if (response.status >= 400) {
               this.error = {
