@@ -1,5 +1,6 @@
-import { polyfill } from 'es6-promise'
+import Color from './Color'
 import 'isomorphic-fetch'
+import { polyfill } from 'es6-promise'
 
 polyfill()
 
@@ -9,27 +10,36 @@ export default {
     return Object.assign({
       author: null,
       colors: [],
-      get (callback) {
-        if (!callback) {
-          callback = (data) => {
+      error: null,
+      get (success, failure) {
+        if (!failure) {
+          failure = (error) => {
+            console.log(error.toString())
+          }
+        }
+        if (!success) {
+          success = (data) => {
             if (data.length === 1) {
               data = data[0]
               this.author = data.userName
-              this.hexColors = data.colors
               this.title = data.title
+              let colors = data.colors
             }
           }
         }
         if (this.id && this.url) {
           fetch(this.url).then((response) => {
             if (response.status >= 400) {
-              throw new Error('Bad server response')
+              this.error = {
+                status: response.status,
+                message: response.statusText
+              }
+              throw new Error(`${response.status} - ${response.statusText}\r\n${response.url}`)
             }
             return response.json()
-          }).then(callback)
+          }).then(success).catch(failure)
         }
       },
-      hexColors: [],
       id,
       title: null,
       url

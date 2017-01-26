@@ -3,6 +3,7 @@ import 'isomorphic-fetch'
 import nock from 'nock'
 import Palette from '../../src/js/Palette'
 import { polyfill } from 'es6-promise'
+import sinon from 'sinon'
 
 polyfill()
 
@@ -13,7 +14,6 @@ describe('Palette', () => {
       expect(palette.author).to.equal(null)
       expect(palette.colors).to.deep.equal([])
       expect(palette.id).to.equal(null)
-      expect(palette.hexColors).to.deep.equal([])
       expect(palette.title).to.equal(null)
       expect(palette.url).to.equal(null)
       expect(palette.get).to.be.a('function')
@@ -46,23 +46,40 @@ describe('Palette', () => {
     }]
     before(() => {
       nock('http://www.colourlovers.com').get('/api/palette/123?format=json').reply(200, fakeData)
+      nock('http://www.colourlovers.com').get('/api/palette/456?format=json').reply(400, fakeData)
     })
     it('should properly convert GET requests into objects', (done) => {
-      let palette = Palette.create('123')
+      let palette = Palette.create(123)
       palette.get((data) => {
         if (data.length === 1) {
           data = data[0]
           palette.author = data.userName
           palette.title = data.title
-          palette.hexColors = data.colors
+          palette.colors = data.colors
           try {
             expect(palette.author).to.be.equal(fakeData[0].userName)
-            expect(palette.hexColors).to.be.deep.equal(fakeData[0].colors)
+            expect(palette.colors).to.be.deep.equal(fakeData[0].colors)
             expect(palette.title).to.be.equal(fakeData[0].title)
             done()
           } catch (error) {
             done(error)
           }
+        }
+      })
+    })
+    it('should handle response failure', (done) => {
+      let successSpy = sinon.spy()
+      let palette = Palette.create(456)
+
+      palette.get(successSpy, (error) => {
+        try {
+          expect(palette.error).to.deep.equal({
+            status: 400,
+            message: 'Bad Request'
+          })
+          done()
+        } catch (error) {
+          done(error)
         }
       })
     })
