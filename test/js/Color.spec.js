@@ -26,6 +26,8 @@ describe('Color', () => {
   describe('get()', () => {
     before(() => {
       nock('http://www.colourlovers.com').get('/api/color/FFFFFF?format=json').reply(200, colorData)
+      nock('http://www.colourlovers.com').get('/api/color/ABCDEF?format=json').reply(200, [])
+      nock('http://www.colourlovers.com').get('/api/color/000000?format=json').reply(400)
     })
     it('should properly convert GET responses into objects', (done) => {
       let color = Color.create('FFFFFF')
@@ -36,6 +38,31 @@ describe('Color', () => {
           color.title = data.title
           expect(color.rgb).to.deep.equal(colorData[0].rgb)
           expect(color.title).to.equal(colorData[0].title)
+          done()
+        } catch (error) {
+          done(error)
+        }
+      })
+    })
+    it('should handle a response with an empty array', (done) => {
+      let color = Color.create('ABCDEF')
+      color.get((data) => {
+        try {
+          expect(data).to.be.empty
+          done()
+        } catch (error) {
+          done(error)
+        }
+      })
+    })
+    it('should handle bad responses', (done) => {
+      let color = Color.create('000000')
+      color.get(() => {}, () => {
+        try {
+          expect(color.error).to.deep.equal({
+            status: 400,
+            message: 'Bad Request'
+          })
           done()
         } catch (error) {
           done(error)

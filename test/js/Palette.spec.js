@@ -51,10 +51,11 @@ describe('Palette', () => {
         }
       })
     })
-    it('should handle empty responses', (done) => {
+    it('should handle an empty array as a response', (done) => {
       let palette = Palette.create('star wars')
       palette.get((data) => {
         try {
+          expect(data).to.be.empty
           expect(data).to.be.empty
           expect(palette.author).to.be.null
           expect(palette.title).to.be.null

@@ -8,6 +8,7 @@ export default {
     hex = hex.toUpperCase()
     const isValid = this.isValidHex(hex)
     return Object.assign(Object.create(this), {
+      error: null,
       hex: (isValid) ? hex : null,
       rgb: null,
       title: null,
