@@ -27,9 +27,9 @@ export default {
         success = (data) => {
           if (data.length === 1) {
             data = data[0]
-            this.author = data.userName
-            this.title = data.title
-            let colors = data.colors
+            this.author = data.userName || null
+            this.title = data.title || null
+            let colors = data.colors || null
           }
         }
       }
