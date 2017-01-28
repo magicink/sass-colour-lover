@@ -3,6 +3,9 @@ import { polyfill } from 'es6-promise'
 
 polyfill()
 
+/**
+ * Color
+ */
 export default {
   create (hex = '') {
     hex = hex.toUpperCase()
@@ -19,16 +22,15 @@ export default {
     if (this.hex) {
       if (!failure) {
         failure = (error) => {
-          console.log(error.toString())
+          this.error = JSON.parse(error.toString().replace('Error: ', ''))
         }
       }
       fetch(this.url).then((response) => {
         if (response.status >= 400) {
-          this.error = {
+          throw new Error(JSON.stringify({
             status: response.status,
-            message: response.statusText
-          }
-          throw new Error(`${response.status} - ${response.statusText}\r\n${response.url}`)
+            statusText: response.statusText
+          }))
         }
         return response.json()
       }).then(success).catch(failure)

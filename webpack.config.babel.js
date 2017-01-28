@@ -10,7 +10,8 @@ export default {
   },
   module: {
     loaders: [
-      {test: /\.js$/, loader: 'babel-loader'}
+      {test: /\.js$/, loader: 'babel-loader'},
+      {test: /\.json$/, loader: 'json-loader'}
     ]
   },
   output: {
@@ -20,7 +21,8 @@ export default {
   plugins: [
     new webpack.BannerPlugin('#!/usr/bin/env node', {
       raw: true
-    })
+    }),
+    new webpack.IgnorePlugin(/vertx/)
   ],
   target: 'node'
 }

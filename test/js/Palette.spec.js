@@ -1,8 +1,9 @@
+import colorData from '../data/colors/6BD10E'
 import { expect } from 'chai'
 import 'isomorphic-fetch'
 import nock from 'nock'
 import Palette from '../../src/js/Palette'
-import paletteData from '../data/palette.json'
+import paletteData from '../data/palettes/123'
 import { polyfill } from 'es6-promise'
 
 polyfill()
@@ -19,8 +20,23 @@ describe('Palette', () => {
       .get('/api/palette/456?format=json')
       .reply(400)
     nock('http://www.colourlovers.com')
-    .get('/api/palette/789?format=json')
-    .reply(200, paletteData)
+      .get('/api/palette/789?format=json')
+      .reply(200, paletteData)
+    nock('http://www.colourlovers.com')
+      .get('/api/palette/101112?format=json')
+      .reply(200, paletteData)
+    nock('http://www.colourlovers.com')
+      .get('/api/color/FF0033?format=json')
+      .reply(200, colorData)
+    nock('http://www.colourlovers.com')
+      .get('/api/color/000000?format=json')
+      .reply(200, colorData)
+    nock('http://www.colourlovers.com')
+      .get('/api/color/AEF504?format=json')
+      .reply(200, colorData)
+    nock('http://www.colourlovers.com')
+      .get('/api/color/EDE6EC?format=json')
+      .reply(200, colorData)
   })
   describe('create()', () => {
     it('should properly create a palette', () => {
@@ -83,11 +99,12 @@ describe('Palette', () => {
     it('should handle response failure', (done) => {
       let palette = Palette.create(456)
 
-      palette.get(() => {}, () => {
+      palette.get(() => {}, (error) => {
         try {
+          palette.error = JSON.parse(error.toString().replace('Error: ', ''))
           expect(palette.error).to.deep.equal({
             status: 400,
-            message: 'Bad Request'
+            statusText: 'Bad Request'
           })
           expect(palette.author).to.be.null
           expect(palette.title).to.be.null
@@ -101,9 +118,6 @@ describe('Palette', () => {
   })
   describe('handleSuccess()', () => {
     it('should properly map values', () => {
-      let palette = Palette.create(789)
-      palette.handleSuccess(paletteData)
-      expect(palette.colors).to.deep.equal(paletteData[0].colors)
     })
   })
 })

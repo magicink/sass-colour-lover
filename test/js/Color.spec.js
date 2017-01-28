@@ -1,5 +1,5 @@
 import Color from '../../src/js/Color'
-import colorData from '../data/color'
+import colorData from '../data/colors/6BD10E'
 import { expect } from 'chai'
 import 'isomorphic-fetch'
 import nock from 'nock'
@@ -36,7 +36,7 @@ describe('Color', () => {
         .get('/api/color/ABCDEF?format=json')
         .reply(200, [])
       nock('http://www.colourlovers.com')
-        .get('/api/color/000000?format=json')
+        .get('/api/color/100000?format=json')
         .reply(400)
     })
     it('should properly convert GET responses into objects', (done) => {
@@ -66,12 +66,13 @@ describe('Color', () => {
       })
     })
     it('should handle a response failure', (done) => {
-      let color = Color.create('000000')
-      color.get(() => {}, () => {
+      let color = Color.create('100000')
+      color.get(() => {}, (error) => {
         try {
+          color.error = JSON.parse(error.toString().replace('Error: ', ''))
           expect(color.error).to.deep.equal({
             status: 400,
-            message: 'Bad Request'
+            statusText: 'Bad Request'
           })
           done()
         } catch (error) {
