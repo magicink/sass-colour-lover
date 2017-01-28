@@ -8,6 +8,12 @@ import { polyfill } from 'es6-promise'
 polyfill()
 
 describe('Palette', () => {
+  before(() => {
+    nock('http://www.colourlovers.com').get('/api/palette/123?format=json').reply(200, paletteData)
+    nock('http://www.colourlovers.com').get('/api/palette/star%20wars?format=json').reply(200, [])
+    nock('http://www.colourlovers.com').get('/api/palette/456?format=json').reply(400)
+    nock('http://www.colourlovers.com').get('/api/palette/789?format=json').reply(200, paletteData)
+  })
   describe('create()', () => {
     it('should properly create a palette', () => {
       let palette = Palette.create()
@@ -18,6 +24,7 @@ describe('Palette', () => {
       expect(palette.url).to.be.null
       expect(palette.create).to.be.a('function')
       expect(palette.get).to.be.a('function')
+      expect(palette.handleSuccess).to.be.a('function')
     })
     it('should properly handle parameters', () => {
       let palette = Palette.create('123')
@@ -28,11 +35,6 @@ describe('Palette', () => {
     })
   })
   describe('get()', () => {
-    before(() => {
-      nock('http://www.colourlovers.com').get('/api/palette/123?format=json').reply(200, paletteData)
-      nock('http://www.colourlovers.com').get('/api/palette/star%20wars?format=json').reply(200, [])
-      nock('http://www.colourlovers.com').get('/api/palette/456?format=json').reply(400)
-    })
     it('should properly convert GET responses into objects', (done) => {
       let palette = Palette.create(123)
       palette.get((data) => {
@@ -83,6 +85,13 @@ describe('Palette', () => {
           done(error)
         }
       })
+    })
+  })
+  describe('handleSuccess()', () => {
+    it('should properly map values', () => {
+      let palette = Palette.create(789)
+      palette.handleSuccess(paletteData)
+      expect(palette.colors).to.deep.equal(paletteData[0].colors)
     })
   })
 })

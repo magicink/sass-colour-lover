@@ -16,6 +16,8 @@ describe('Color', () => {
       expect(color.rgb).to.be.null
       expect(color.url).to.be.null
       expect(color.create).to.be.a('function')
+      expect(color.get).to.be.a('function')
+      expect(color.handleSuccess).to.be.a('function')
       let badColor = Color.create('fff')
       expect(badColor.hex).to.be.null
       let goodColor = Color.create('ffffff')
@@ -55,7 +57,7 @@ describe('Color', () => {
         }
       })
     })
-    it('should handle bad responses', (done) => {
+    it('should handle a response failure', (done) => {
       let color = Color.create('000000')
       color.get(() => {}, () => {
         try {
@@ -68,6 +70,14 @@ describe('Color', () => {
           done(error)
         }
       })
+    })
+  })
+  describe('handleSuccess()', () => {
+    it('should correctly map data', () => {
+      let color = Color.create()
+      color.handleSuccess(colorData)
+      expect(color.title).to.equal(colorData[0].title)
+      expect(color.rgb).to.deep.equal(colorData[0].rgb)
     })
   })
   describe('isValidHex()', () => {

@@ -15,20 +15,11 @@ export default {
       url: (isValid) ? `http://www.colourlovers.com/api/color/${hex}?format=json` : null
     })
   },
-  get (success, failure) {
+  get (success = this.handleSuccess.bind(this), failure) {
     if (this.hex) {
       if (!failure) {
         failure = (error) => {
           console.log(error.toString())
-        }
-      }
-      if (!success) {
-        success = (data) => {
-          if (data.length === 1) {
-            data = data[0]
-            this.rgb = data.rgb || null
-            this.title = data.title || null
-          }
         }
       }
       fetch(this.url).then((response) => {
@@ -41,6 +32,13 @@ export default {
         }
         return response.json()
       }).then(success).catch(failure)
+    }
+  },
+  handleSuccess (data) {
+    if (data.length === 1) {
+      data = data[0]
+      this.rgb = data.rgb || null
+      this.title = data.title || null
     }
   },
   isValidHex (hex = '') {

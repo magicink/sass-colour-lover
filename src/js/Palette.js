@@ -1,4 +1,3 @@
-import Color from './Color'
 import 'isomorphic-fetch'
 import { polyfill } from 'es6-promise'
 
@@ -16,21 +15,11 @@ export default {
       url
     })
   },
-  get (success, failure) {
+  get (success = this.handleSuccess.bind(this), failure) {
     if (this.id && this.url) {
       if (!failure) {
         failure = (error) => {
           console.log(error.toString())
-        }
-      }
-      if (!success) {
-        success = (data) => {
-          if (data.length === 1) {
-            data = data[0]
-            this.author = data.userName || null
-            this.title = data.title || null
-            let colors = data.colors || null
-          }
         }
       }
       fetch(this.url).then((response) => {
@@ -43,6 +32,14 @@ export default {
         }
         return response.json()
       }).then(success).catch(failure)
+    }
+  },
+  handleSuccess (data) {
+    if (data.length === 1) {
+      data = data[0]
+      this.author = data.userName || null
+      this.title = data.title || null
+      this.colors = data.colors || null
     }
   }
 }
