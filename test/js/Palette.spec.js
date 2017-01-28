@@ -9,10 +9,18 @@ polyfill()
 
 describe('Palette', () => {
   before(() => {
-    nock('http://www.colourlovers.com').get('/api/palette/123?format=json').reply(200, paletteData)
-    nock('http://www.colourlovers.com').get('/api/palette/star%20wars?format=json').reply(200, [])
-    nock('http://www.colourlovers.com').get('/api/palette/456?format=json').reply(400)
-    nock('http://www.colourlovers.com').get('/api/palette/789?format=json').reply(200, paletteData)
+    nock('http://www.colourlovers.com')
+      .get('/api/palette/123?format=json')
+      .reply(200, paletteData)
+    nock('http://www.colourlovers.com')
+      .get('/api/palette/star%20wars?format=json')
+      .reply(200, [])
+    nock('http://www.colourlovers.com')
+      .get('/api/palette/456?format=json')
+      .reply(400)
+    nock('http://www.colourlovers.com')
+    .get('/api/palette/789?format=json')
+    .reply(200, paletteData)
   })
   describe('create()', () => {
     it('should properly create a palette', () => {
@@ -29,9 +37,13 @@ describe('Palette', () => {
     it('should properly handle parameters', () => {
       let palette = Palette.create('123')
       expect(palette.id).to.equal('123')
-      expect(palette.url).to.deep.equal('http://www.colourlovers.com/api/palette/123?format=json')
+      expect(palette.url).to.deep.equal(
+        'http://www.colourlovers.com/api/palette/123?format=json'
+      )
       palette = Palette.create('star wars')
-      expect(palette.url).to.deep.equal('http://www.colourlovers.com/api/palette/star%20wars?format=json')
+      expect(palette.url).to.deep.equal(
+        'http://www.colourlovers.com/api/palette/star%20wars?format=json'
+      )
     })
   })
   describe('get()', () => {

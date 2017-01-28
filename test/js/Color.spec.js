@@ -22,14 +22,22 @@ describe('Color', () => {
       expect(badColor.hex).to.be.null
       let goodColor = Color.create('ffffff')
       expect(goodColor.hex).to.equal('FFFFFF')
-      expect(goodColor.url).to.equal('http://www.colourlovers.com/api/color/FFFFFF?format=json')
+      expect(goodColor.url).to.equal(
+        'http://www.colourlovers.com/api/color/FFFFFF?format=json'
+      )
     })
   })
   describe('get()', () => {
     before(() => {
-      nock('http://www.colourlovers.com').get('/api/color/FFFFFF?format=json').reply(200, colorData)
-      nock('http://www.colourlovers.com').get('/api/color/ABCDEF?format=json').reply(200, [])
-      nock('http://www.colourlovers.com').get('/api/color/000000?format=json').reply(400)
+      nock('http://www.colourlovers.com')
+        .get('/api/color/FFFFFF?format=json')
+        .reply(200, colorData)
+      nock('http://www.colourlovers.com')
+        .get('/api/color/ABCDEF?format=json')
+        .reply(200, [])
+      nock('http://www.colourlovers.com')
+        .get('/api/color/000000?format=json')
+        .reply(400)
     })
     it('should properly convert GET responses into objects', (done) => {
       let color = Color.create('FFFFFF')
