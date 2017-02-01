@@ -45,19 +45,18 @@ describe('Palette', () => {
       expect(palette.colors).to.be.empty
       expect(palette.id).to.be.null
       expect(palette.title).to.be.null
-      expect(palette.url).to.be.null
       expect(palette.create).to.be.a('function')
       expect(palette.get).to.be.a('function')
-      expect(palette.handleSuccess).to.be.a('function')
+      expect(palette.getUrl).to.be.a('function')
     })
     it('should properly handle parameters', () => {
       let palette = Palette.create('123')
       expect(palette.id).to.equal('123')
-      expect(palette.url).to.deep.equal(
+      expect(palette.getUrl()).to.equal(
         'http://www.colourlovers.com/api/palette/123?format=json'
       )
       palette = Palette.create('star wars')
-      expect(palette.url).to.deep.equal(
+      expect(palette.getUrl()).to.equal(
         'http://www.colourlovers.com/api/palette/star%20wars?format=json'
       )
     })
@@ -65,59 +64,33 @@ describe('Palette', () => {
   describe('get()', () => {
     it('should properly convert GET responses into objects', (done) => {
       let palette = Palette.create(123)
-      palette.get((data) => {
-        expect(data.length).to.equal(1)
-        data = data[0]
-        palette.author = data.userName
-        palette.title = data.title
-        palette.colors = data.colors
-        try {
-          expect(palette.author).to.equal(paletteData[0].userName)
-          expect(palette.colors).to.deep.equal(paletteData[0].colors)
-          expect(palette.title).to.be.equal(paletteData[0].title)
-          done()
-        } catch (error) {
-          done(error)
-        }
+      palette.get().then(() => {
+        expect(palette.author).to.equal(paletteData[0].userName)
+        expect(palette.colors).to.deep.equal(paletteData[0].colors)
+        expect(palette.title).to.be.equal(paletteData[0].title)
+        done()
       })
     })
     it('should handle an empty array as a response', (done) => {
       let palette = Palette.create('star wars')
-      palette.get((data) => {
-        try {
-          expect(data).to.be.empty
-          expect(data).to.be.empty
-          expect(palette.author).to.be.null
-          expect(palette.title).to.be.null
-          expect(palette.colors).to.be.empty
-          done()
-        } catch (error) {
-          done(error)
-        }
+      palette.get().then(() => {
+        done()
+      }).catch((error) => {
+        expect(error.toString()).to.equal('Palette star wars contained no data.')
+        done()
       })
     })
     it('should handle response failure', (done) => {
       let palette = Palette.create(456)
-
-      palette.get(() => {}, (error) => {
-        try {
-          palette.error = JSON.parse(error.toString().replace('Error: ', ''))
-          expect(palette.error).to.deep.equal({
-            status: 400,
-            statusText: 'Bad Request'
-          })
-          expect(palette.author).to.be.null
-          expect(palette.title).to.be.null
-          expect(palette.colors).to.be.empty
-          done()
-        } catch (error) {
-          done(error)
-        }
+      palette.get().then(() => {
+        done()
+      }).catch((error) => {
+        expect(palette.error).to.deep.equal({
+          status: 400,
+          statusText: 'Bad Request'
+        })
+        done()
       })
-    })
-  })
-  describe('handleSuccess()', () => {
-    it('should properly map values', () => {
     })
   })
 })

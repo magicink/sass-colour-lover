@@ -3,45 +3,52 @@ import { polyfill } from 'es6-promise'
 
 polyfill()
 
-/**
- * Color
- */
 export default {
   create (hex = '') {
     hex = hex.toUpperCase()
     const isValid = this.isValidHex(hex)
     return Object.assign(Object.create(this), {
       error: null,
+      getUrl () {
+        if (this.isValidHex(hex)) {
+          return `http://www.colourlovers.com/api/color/${hex}?format=json`
+        } else {
+          return null
+        }
+      },
       hex: (isValid) ? hex : null,
       rgb: null,
-      title: null,
-      url: (isValid) ? `http://www.colourlovers.com/api/color/${hex}?format=json` : null
+      title: null
     })
   },
-  get (success = this.handleSuccess.bind(this), failure) {
-    if (this.hex) {
-      if (!failure) {
-        failure = (error) => {
+  get () {
+    return new Promise((resolve, reject) => {
+      if (this.hex && this.url) {
+        fetch(this.getUrl()).then((response) => {
+          if (response.status >= 400) {
+            throw new Error(JSON.stringify({
+              status: response.status,
+              statusText: response.statusText
+            }))
+          }
+          return response.json()
+        }).then((data) => {
+          if (data.length === 1) {
+            data = data[0]
+            this.rgb = data.rgb
+            this.title = data.title
+            resolve(this)
+          } else {
+            reject(`Color ${this.hex} contained no data.`)
+          }
+        }).catch((error) => {
           this.error = JSON.parse(error.toString().replace('Error: ', ''))
-        }
+          reject()
+        })
+      } else {
+        reject()
       }
-      fetch(this.url).then((response) => {
-        if (response.status >= 400) {
-          throw new Error(JSON.stringify({
-            status: response.status,
-            statusText: response.statusText
-          }))
-        }
-        return response.json()
-      }).then(success).catch(failure)
-    }
-  },
-  handleSuccess (data) {
-    if (data.length === 1) {
-      data = data[0]
-      this.rgb = data.rgb || null
-      this.title = data.title || null
-    }
+    })
   },
   isValidHex (hex = '') {
     let valid = true

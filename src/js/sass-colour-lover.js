@@ -4,9 +4,20 @@ import validOptions from './ValidOptions'
 
 try {
   const options = commandLineArgs(validOptions)
-  if (options.help === true || options.ids === undefined) {
+  if (
+    options.help === true ||
+    options.ids === undefined ||
+    options.ids.length < 1
+  ) {
     throw new Error('HELP')
   }
+  // Add each ID to a set so that there each one is unique
+  // Initialize the count for processed palettes
+  // For each of the provided IDs
+    // Reset the palette object
+    // Populate the palette object
+    // Attempt to fetch the palette remotely
+      // On push a simplified object to the palettes array
 } catch (error) {
   const errorType = error.toString().replace('Error: ', '')
   let usage = ''

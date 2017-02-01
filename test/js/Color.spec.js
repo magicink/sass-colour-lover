@@ -14,15 +14,17 @@ describe('Color', () => {
       expect(color.hex).to.be.null
       expect(color.title).to.be.null
       expect(color.rgb).to.be.null
-      expect(color.url).to.be.null
+      expect(color.getUrl).to.be.a('function')
+      expect(color.getUrl()).to.be.null
       expect(color.create).to.be.a('function')
       expect(color.get).to.be.a('function')
-      expect(color.handleSuccess).to.be.a('function')
       let badColor = Color.create('fff')
       expect(badColor.hex).to.be.null
+      expect(badColor.getUrl()).to.be.null
+
       let goodColor = Color.create('ffffff')
       expect(goodColor.hex).to.equal('FFFFFF')
-      expect(goodColor.url).to.equal(
+      expect(goodColor.getUrl()).to.equal(
         'http://www.colourlovers.com/api/color/FFFFFF?format=json'
       )
     })
@@ -41,52 +43,29 @@ describe('Color', () => {
     })
     it('should properly convert GET responses into objects', (done) => {
       let color = Color.create('FFFFFF')
-      color.get((data) => {
-        try {
-          data = data[0]
-          color.rgb = data.rgb
-          color.title = data.title
-          expect(color.rgb).to.deep.equal(colorData[0].rgb)
-          expect(color.title).to.equal(colorData[0].title)
-          done()
-        } catch (error) {
-          done(error)
-        }
+      color.get().then(() => {
+        expect(color.title).to.equal(colorData[0].title)
+        expect(color.rgb).to.deep.equal(colorData[0].rgb)
+        done()
+      }).catch(() => {
+        done()
       })
     })
     it('should handle a response with an empty array', (done) => {
       let color = Color.create('ABCDEF')
-      color.get((data) => {
-        try {
-          expect(data).to.be.empty
-          done()
-        } catch (error) {
-          done(error)
-        }
+      color.get().then(() => {
+        done()
+      }).catch(() => {
+        done()
       })
     })
     it('should handle a response failure', (done) => {
       let color = Color.create('100000')
-      color.get(() => {}, (error) => {
-        try {
-          color.error = JSON.parse(error.toString().replace('Error: ', ''))
-          expect(color.error).to.deep.equal({
-            status: 400,
-            statusText: 'Bad Request'
-          })
-          done()
-        } catch (error) {
-          done(error)
-        }
+      color.get().then(() => {
+        done()
+      }).catch(() => {
+        done()
       })
-    })
-  })
-  describe('handleSuccess()', () => {
-    it('should correctly map data', () => {
-      let color = Color.create()
-      color.handleSuccess(colorData)
-      expect(color.title).to.equal(colorData[0].title)
-      expect(color.rgb).to.deep.equal(colorData[0].rgb)
     })
   })
   describe('isValidHex()', () => {
