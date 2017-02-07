@@ -19,7 +19,8 @@ export default {
     path: `${path.resolve(__dirname, 'build')}`
   },
   plugins: [
-    new webpack.BannerPlugin('#!/usr/bin/env node', {
+    new webpack.BannerPlugin({
+      banner: '#!/usr/bin/env node',
       raw: true
     }),
     new webpack.IgnorePlugin(/vertx/)
